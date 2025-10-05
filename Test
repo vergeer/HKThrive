@@ -1,0 +1,628 @@
+import React, { useState } from "react";
+
+// Bilingual Mental Health Website Wireframe (EN / 中文)
+// - One-file React component using TailwindCSS
+// - Shows global header with language toggle, nav, split landing cards
+// - Two inner pages: Adults + Children & Young People
+// - Accessible structure, calm layout, placeholder videos with captions tracks
+// - Designed as a wireframe: simple shapes, labels, and sample content
+
+export default function BilingualMentalHealthWireframe() {
+  const [lang, setLang] = useState("en");
+  const [page, setPage] = useState<"landing" | "adults" | "children">("landing");
+
+  const t = translations[lang];
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-white p-2 rounded shadow">
+        {t.skipToContent}
+      </a>
+
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-slate-200 flex items-center justify-center font-bold">MH</div>
+            <div className="font-semibold tracking-tight">
+              {t.siteName}
+            </div>
+          </div>
+
+          {/* Nav (wireframe) */}
+          <nav aria-label={t.mainNav} className="hidden md:flex items-center gap-6 text-sm">
+            <button className={navBtn(page === "landing")}
+              onClick={() => setPage("landing")}>{t.nav.home}</button>
+            <div className="relative group">
+              <button className={navBtn(page === "adults" || page === "children")}>
+                {t.nav.gettingHelp}
+              </button>
+              <div className="absolute left-0 mt-2 hidden group-hover:block bg-white border rounded-xl shadow p-2 w-56">
+                <button className={menuItem()} onClick={() => setPage("adults")}>{t.nav.adults}</button>
+                <button className={menuItem()} onClick={() => setPage("children")}>{t.nav.children}</button>
+              </div>
+            </div>
+            <button className={navBtn(false)}>{t.nav.topics}</button>
+            <button className={navBtn(false)}>{t.nav.resources}</button>
+            <button className={navBtn(false)}>{t.nav.crisis}</button>
+            <button className={navBtn(false)}>{t.nav.about}</button>
+          </nav>
+
+          {/* Language toggle */}
+          <div className="flex items-center gap-2 text-sm" aria-label={t.langToggleLabel}>
+            <button aria-pressed={lang === "en"} onClick={() => setLang("en")} className={langBtn(lang === "en")}>
+              EN
+            </button>
+            <span className="text-slate-400">|</span>
+            <button aria-pressed={lang === "zh"} onClick={() => setLang("zh")} className={langBtn(lang === "zh")}>
+              中文
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main id="main" className="max-w-6xl mx-auto px-4 py-8">
+        {page === "landing" && <Landing t={t} setPage={setPage} />}
+        {page === "adults" && <AdultsPage t={t} />}
+        {page === "children" && <ChildrenPage t={t} />}
+      </main>
+
+      <footer className="mt-16 border-t border-slate-200 bg-white">
+        <div className="max-w-6xl mx-auto px-4 py-6 grid md:grid-cols-3 gap-6 text-sm">
+          <div>
+            <div className="font-semibold mb-2">{t.footer.contact}</div>
+            <ul className="space-y-1">
+              <li><a href="#" className="underline underline-offset-2">{t.footer.email}</a></li>
+              <li><a href="#" className="underline underline-offset-2">{t.footer.accessibility}</a></li>
+              <li><a href="#" className="underline underline-offset-2">{t.footer.privacy}</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-semibold mb-2">{t.footer.quickLinks}</div>
+            <ul className="space-y-1">
+              <li><button className="underline underline-offset-2" onClick={() => setPage("adults")}>{t.nav.adults}</button></li>
+              <li><button className="underline underline-offset-2" onClick={() => setPage("children")}>{t.nav.children}</button></li>
+              <li><a className="underline underline-offset-2" href="#">{t.nav.crisis}</a></li>
+            </ul>
+          </div>
+          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200">
+            <div className="font-semibold">{t.crisis.title}</div>
+            <p className="mt-1 text-sm">{t.crisis.copy}</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function navBtn(active: boolean) {
+  return (
+    "px-2 py-1 rounded-lg " +
+    (active ? "bg-slate-900 text-white" : "hover:bg-slate-100 text-slate-700")
+  );
+}
+function menuItem() {
+  return "w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100";
+}
+function langBtn(active: boolean) {
+  return (
+    "px-2 py-1 rounded-lg border " +
+    (active ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 hover:bg-slate-100")
+  );
+}
+
+// ---------- Landing ----------
+function Landing({ t, setPage }: any) {
+  return (
+    <section aria-labelledby="landing-title" className="space-y-8">
+      {/* Hero */}
+      <div className="grid md:grid-cols-5 gap-6 items-center">
+        <div className="md:col-span-3 p-6 rounded-3xl bg-white border border-slate-200 shadow-sm">
+          <h1 id="landing-title" className="text-2xl md:text-3xl font-bold tracking-tight">{t.hero.title}</h1>
+          <p className="mt-3 text-slate-700 leading-relaxed">{t.hero.subtitle}</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button onClick={() => setPage("adults")} className="px-4 py-2 rounded-xl bg-slate-900 text-white">{t.hero.ctaAdults}</button>
+            <button onClick={() => setPage("children")} className="px-4 py-2 rounded-xl bg-slate-100 text-slate-900 border">{t.hero.ctaChildren}</button>
+          </div>
+        </div>
+        <div className="md:col-span-2 p-4 rounded-3xl bg-rose-50 border border-rose-200">
+          <h2 className="font-semibold">{t.crisis.title}</h2>
+          <p className="mt-1 text-sm">{t.crisis.copy}</p>
+          <ul className="mt-3 text-sm list-disc pl-5 space-y-1">
+            <li>{t.crisis.n111}</li>
+            <li>{t.crisis.n999}</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Split cards for Adults / Children */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm">
+          <h3 className="text-xl font-semibold">{t.cards.adults.title}</h3>
+          <p className="mt-2 text-sm text-slate-700">{t.cards.adults.desc}</p>
+          <button onClick={() => setPage("adults")} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl border bg-slate-900 text-white">{t.cards.explore}</button>
+        </div>
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm">
+          <h3 className="text-xl font-semibold">{t.cards.children.title}</h3>
+          <p className="mt-2 text-sm text-slate-700">{t.cards.children.desc}</p>
+          <button onClick={() => setPage("children")} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl border bg-slate-100">{t.cards.explore}</button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Adults Page (content-focused wireframe using supplied copy) ----------
+function AdultsPage({ t }: any) {
+  return (
+    <article aria-labelledby="adults-title" className="space-y-8">
+      <header className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm">
+        <h1 id="adults-title" className="text-2xl md:text-3xl font-bold tracking-tight">{t.adults.title}</h1>
+        <p className="mt-2 text-slate-700">{t.adults.intro}</p>
+      </header>
+
+      {/* Section 1: GP */}
+      <SectionCard number={1} title={t.adults.s1.title}>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>{t.adults.s1.li1}</li>
+          <li>{t.adults.s1.li2}</li>
+          <li>{t.adults.s1.li3}</li>
+        </ul>
+      </SectionCard>
+
+      {/* Section 2: Talking Therapies */}
+      <SectionCard number={2} title={t.adults.s2.title}>
+        <p className="text-sm text-slate-700">{t.adults.s2.p}</p>
+        <ul className="list-disc pl-5 mt-2 space-y-1">
+          <li>CBT</li>
+          <li>{t.adults.s2.li2}</li>
+          <li>{t.adults.s2.li3}</li>
+        </ul>
+        <ActionBar>
+          <a href="#" className="underline underline-offset-2">{t.actions.selfRefer}</a>
+        </ActionBar>
+      </SectionCard>
+
+      {/* Section 3: Specialist services */}
+      <SectionCard number={3} title={t.adults.s3.title}>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>{t.adults.s3.li1}</li>
+          <li>{t.adults.s3.li2}</li>
+          <li>{t.adults.s3.li3}</li>
+        </ul>
+      </SectionCard>
+
+      {/* Section 4: Crisis */}
+      <SectionCard number={4} title={t.adults.s4.title} accent>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>{t.adults.s4.li1}</li>
+          <li>{t.adults.s4.li2}</li>
+          <li>{t.adults.s4.li3}</li>
+        </ul>
+      </SectionCard>
+
+      {/* Section 5: Other Support */}
+      <SectionCard number={5} title={t.adults.s5.title}>
+        <div className="grid md:grid-cols-2 gap-4 text-sm">
+          <div className="p-3 rounded-xl border bg-white">
+            <div className="font-medium">{t.adults.s5.cards.helplines.title}</div>
+            <p className="text-slate-700">{t.adults.s5.cards.helplines.desc}</p>
+          </div>
+          <div className="p-3 rounded-xl border bg-white">
+            <div className="font-medium">{t.adults.s5.cards.hk.title}</div>
+            <p className="text-slate-700">{t.adults.s5.cards.hk.desc}</p>
+          </div>
+          <div className="p-3 rounded-xl border bg-white">
+            <div className="font-medium">{t.adults.s5.cards.eap.title}</div>
+            <p className="text-slate-700">{t.adults.s5.cards.eap.desc}</p>
+          </div>
+          <div className="p-3 rounded-xl border bg-white">
+            <div className="font-medium">{t.adults.s5.cards.private.title}</div>
+            <p className="text-slate-700">{t.adults.s5.cards.private.desc}</p>
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* Section 6: HK Orgs list placeholder */}
+      <SectionCard number={6} title={t.adults.s6.title}>
+        <div className="grid md:grid-cols-3 gap-4 text-sm">
+          {[1,2,3].map((n)=> (
+            <div key={n} className="p-3 rounded-xl border bg-white">
+              <div className="font-medium">{t.placeholder.orgName} {n}</div>
+              <p className="text-slate-700">{t.placeholder.orgDesc}</p>
+              <a href="#" className="underline underline-offset-2">{t.placeholder.contact}</a>
+            </div>
+          ))}
+        </div>
+      </SectionCard>
+
+      {/* Summary */}
+      <SummaryPanel title={t.adults.summary.title} items={t.adults.summary.items} />
+    </article>
+  );
+}
+
+// ---------- Children & Young People Page ----------
+function ChildrenPage({ t }: any) {
+  return (
+    <article aria-labelledby="children-title" className="space-y-8">
+      <header className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm">
+        <h1 id="children-title" className="text-2xl md:text-3xl font-bold tracking-tight">{t.children.title}</h1>
+        <p className="mt-2 text-slate-700">{t.children.intro}</p>
+      </header>
+
+      <SectionCard number={1} title={t.children.s1.title}>
+        <p className="text-sm text-slate-700">{t.children.s1.p}</p>
+      </SectionCard>
+
+      <SectionCard number={2} title={t.children.s2.title}>
+        <p className="text-sm text-slate-700">{t.children.s2.p}</p>
+      </SectionCard>
+
+      <SectionCard number={3} title={t.children.s3.title}>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>{t.children.s3.li1}</li>
+          <li>{t.children.s3.li2}</li>
+          <li>{t.children.s3.li3}</li>
+        </ul>
+        <ActionBar>
+          <button className="underline underline-offset-2">{t.actions.referralRoutes}</button>
+        </ActionBar>
+      </SectionCard>
+
+      <SectionCard number={4} title={t.children.s4.title}>
+        <p className="text-sm text-slate-700">{t.children.s4.p}</p>
+      </SectionCard>
+
+      <SectionCard number={5} title={t.children.s5.title}>
+        <div className="grid md:grid-cols-2 gap-4 text-sm">
+          {t.children.s5.cards.map((c: any, i: number) => (
+            <div key={i} className="p-3 rounded-xl border bg-white">
+              <div className="font-medium">{c.name}</div>
+              <p className="text-slate-700">{c.desc}</p>
+              <a href="#" className="underline underline-offset-2">{c.cta}</a>
+            </div>
+          ))}
+        </div>
+      </SectionCard>
+
+      {/* Video blocks (bilingual captions) */}
+      <SectionCard number={6} title={t.children.s6.title}>
+        <div className="grid md:grid-cols-2 gap-4">
+          <VideoBlock title={t.children.s6.v1.title} desc={t.children.s6.v1.desc} />
+          <VideoBlock title={t.children.s6.v2.title} desc={t.children.s6.v2.desc} />
+        </div>
+      </SectionCard>
+
+      <SummaryPanel title={t.children.summary.title} items={t.children.summary.items} />
+    </article>
+  );
+}
+
+// ---------- Shared UI ----------
+function SectionCard({ number, title, children, accent=false }: any) {
+  return (
+    <section className={`relative p-6 rounded-3xl border ${accent ? "bg-rose-50 border-rose-200" : "bg-white border-slate-200"}`}>
+      <div className="absolute -top-3 left-6 h-6 px-2 rounded-full bg-slate-900 text-white text-xs flex items-center">{number}</div>
+      <h2 className="text-xl font-semibold">{title}</h2>
+      <div className="mt-3 text-sm leading-relaxed">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function ActionBar({ children }: any) {
+  return (
+    <div className="mt-3 p-3 rounded-xl bg-slate-50 border text-sm flex flex-wrap gap-3 items-center">
+      {children}
+    </div>
+  );
+}
+
+function SummaryPanel({ title, items }: any) {
+  return (
+    <section className="p-6 rounded-3xl bg-slate-900 text-white">
+      <h2 className="text-xl font-semibold">{title}</h2>
+      <ol className="mt-3 list-decimal pl-6 space-y-1">
+        {items.map((it: string, i: number) => <li key={i}>{it}</li>)}
+      </ol>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button className="px-4 py-2 rounded-xl bg-white text-slate-900">Print / PDF</button>
+        <button className="px-4 py-2 rounded-xl bg-white text-slate-900">Share</button>
+      </div>
+    </section>
+  );
+}
+
+function VideoBlock({ title, desc }: any) {
+  return (
+    <div className="p-3 rounded-2xl border bg-white">
+      <div className="aspect-video w-full rounded-xl bg-slate-100 border flex items-center justify-center text-slate-400">{title}</div>
+      <p className="mt-2 text-sm text-slate-700">{desc}</p>
+      <video controls className="w-full mt-2 rounded-lg" aria-label={title}>
+        <source src="#" type="video/mp4" />
+        <track label="English captions" kind="subtitles" srcLang="en" src="#" default />
+        <track label="繁體中文字幕" kind="subtitles" srcLang="zh" src="#" />
+      </video>
+      <details className="mt-2 text-sm text-slate-600">
+        <summary>Transcript</summary>
+        <p className="mt-2">{"[Sample transcript placeholder for accessibility.]"}</p>
+      </details>
+    </div>
+  );
+}
+
+// ---------- Translations (EN / 中文〈繁體〉) ----------
+const translations: any = {
+  en: {
+    siteName: "UK Mental Health Help",
+    mainNav: "Main navigation",
+    langToggleLabel: "Language toggle",
+    skipToContent: "Skip to content",
+    nav: {
+      home: "Home",
+      gettingHelp: "Getting Help",
+      adults: "Adults",
+      children: "Children & Young People",
+      topics: "Topics",
+      resources: "Resources & Charities",
+      crisis: "Crisis Support",
+      about: "About Us",
+    },
+    hero: {
+      title: "Getting Help with Your Mental Health in the UK",
+      subtitle: "Clear, trustworthy guidance for adults, children, and families — in English and Cantonese.",
+      ctaAdults: "Explore Adults",
+      ctaChildren: "Explore Children & Young People",
+    },
+    crisis: {
+      title: "Need urgent help?",
+      copy: "Call 999 if there is immediate danger. For urgent mental health support call NHS 111 (option 2).",
+      n111: "NHS 111 (option 2) – speak to a mental health professional",
+      n999: "999 / A&E – emergencies",
+    },
+    cards: {
+      explore: "Explore →",
+      adults: {
+        title: "Adults",
+        desc: "GPs, NHS Talking Therapies, specialist services, crisis options, and charities.",
+      },
+      children: {
+        title: "Children & Young People",
+        desc: "Talk to a trusted adult, GP/CAMHS, school support, helplines, and videos.",
+      },
+    },
+    actions: {
+      selfRefer: "Self-refer online",
+      referralRoutes: "See referral routes",
+    },
+    placeholder: {
+      orgName: "Organisation",
+      orgDesc: "Short description of services for the Hong Kong community.",
+      contact: "Contact / Website",
+    },
+    footer: {
+      contact: "Contact",
+      email: "Email us",
+      accessibility: "Accessibility",
+      privacy: "Privacy",
+      quickLinks: "Quick Links",
+    },
+    adults: {
+      title: "Getting Help with Your Mental Health in the UK (Adults)",
+      intro: "Moving to a new country can be exciting but also stressful. If you are struggling with your mental health in the UK, you are not alone — and there is help available.",
+      s1: {
+        title: "Start with Your GP",
+        li1: "Talk to your GP about how you are feeling.",
+        li2: "They can give advice and prescribe medication if needed.",
+        li3: "Your GP can refer you to counselling, therapy, or specialist services.",
+      },
+      s2: {
+        title: "NHS Talking Therapies (anxiety, stress, depression)",
+        p: "Free service in England. You can often refer yourself online.",
+        li2: "Guided self-help",
+        li3: "Group therapy and counselling",
+      },
+      s3: {
+        title: "Specialist Mental Health Services",
+        li1: "Community Mental Health Teams (CMHTs) for ongoing support.",
+        li2: "Specialist teams: eating disorders, addictions, perinatal mental health.",
+        li3: "Usually a GP referral is needed.",
+      },
+      s4: {
+        title: "Urgent and Crisis Help",
+        li1: "Call NHS 111 (option 2) to speak to a mental health professional.",
+        li2: "Find your local NHS crisis team on your NHS Trust website.",
+        li3: "If in immediate danger, call 999 or go to A&E.",
+      },
+      s5: {
+        title: "Other Sources of Support",
+        cards: {
+          helplines: { title: "Helplines & Charities", desc: "Samaritans, Mind, Rethink – free, confidential support." },
+          hk: { title: "Hong Kong Community", desc: "Local groups offering Cantonese-language support." },
+          eap: { title: "Workplace EAPs", desc: "Check if your employer provides free counselling." },
+          private: { title: "Private Therapy", desc: "Available more quickly but you must pay." },
+        },
+      },
+      s6: { title: "Hong Kong–Focused Organisations" },
+      summary: {
+        title: "Summary: Where to Start",
+        items: [
+          "Talk to your GP",
+          "Self-refer to NHS Talking Therapies (mild–moderate)",
+          "GP referral to specialist services (complex needs)",
+          "Crisis: 111 (option 2) / 999 / A&E",
+          "Extra support: charities, helplines, private options",
+        ],
+      },
+    },
+    children: {
+      title: "Getting Help in the UK (Children & Young People)",
+      intro: "If difficult feelings are affecting daily life, help is available for children and teenagers.",
+      s1: { title: "Talk to a Trusted Adult", p: "Speak with a parent, carer, teacher, or school counsellor." },
+      s2: { title: "See Your GP", p: "Your GP can listen, advise, and refer you to CAMHS. Under 16s usually attend with a parent or carer." },
+      s3: {
+        title: "NHS Services (CAMHS)",
+        li1: "Helps up to age 18 with issues like anxiety, low mood, eating problems.",
+        li2: "Referrals from GP, school, or social worker.",
+        li3: "Support may include therapy, assessments, and ongoing care.",
+      },
+      s4: { title: "School or College Support", p: "Pastoral teams, wellbeing leads, and counsellors can help. Universities provide counselling services." },
+      s5: { title: "Helplines & Online Support",
+        cards: [
+          { name: "Childline", desc: "Free, confidential chat/phone for under 19.", cta: "0800 1111 / childline.org.uk" },
+          { name: "YoungMinds Textline", desc: "Text support for young people in crisis.", cta: "Text YM to 85258" },
+          { name: "Kooth", desc: "Free online mental health support.", cta: "kooth.com" },
+          { name: "The Mix", desc: "Advice and community for under 25s.", cta: "themix.org.uk" },
+        ] },
+      s6: {
+        title: "Short Explainer Videos (EN / 中文)",
+        v1: { title: "How to talk to your GP", desc: "Animated explainer – booking, what to say, what happens next." },
+        v2: { title: "What is CAMHS?", desc: "Referral routes and what support looks like." },
+      },
+      summary: {
+        title: "Summary: Your Next Steps",
+        items: [
+          "Talk to a trusted adult",
+          "Visit your GP",
+          "Ask about CAMHS",
+          "Use school or college support",
+          "Use helplines and online support",
+        ],
+      },
+    },
+  },
+  zh: {
+    siteName: "英國精神健康支援",
+    mainNav: "主選單",
+    langToggleLabel: "語言切換",
+    skipToContent: "跳至內容",
+    nav: {
+      home: "首頁",
+      gettingHelp: "尋求協助",
+      adults: "成人",
+      children: "兒童及青少年",
+      topics: "主題",
+      resources: "資源及慈善機構",
+      crisis: "緊急支援",
+      about: "關於我們",
+    },
+    hero: {
+      title: "在英國尋求精神健康支援",
+      subtitle: "以中英雙語提供可靠而清晰的資訊，幫助成人、兒童及家庭。",
+      ctaAdults: "查看成人資訊",
+      ctaChildren: "查看兒童及青少年",
+    },
+    crisis: {
+      title: "需要即時支援？",
+      copy: "如有生命危險請致電 999。緊急精神健康支援：致電 NHS 111（按 2）。",
+      n111: "NHS 111（選擇 2）— 與精神健康專業人員對話",
+      n999: "999 / A&E — 緊急情況",
+    },
+    cards: {
+      explore: "前往 →",
+      adults: { title: "成人", desc: "家庭醫生、NHS 諮商、專科服務、危機求助與慈善支援。" },
+      children: { title: "兒童及青少年", desc: "與可信賴的大人對話、GP／CAMHS、學校支援、熱線與影片。" },
+    },
+    actions: {
+      selfRefer: "網上自我轉介",
+      referralRoutes: "查看轉介途徑",
+    },
+    placeholder: {
+      orgName: "機構",
+      orgDesc: "為香港社群提供服務的簡介。",
+      contact: "聯絡／網站",
+    },
+    footer: {
+      contact: "聯絡我們",
+      email: "電郵我們",
+      accessibility: "無障礙",
+      privacy: "私隱政策",
+      quickLinks: "快速連結",
+    },
+    adults: {
+      title: "在英國尋求精神健康支援（成人）",
+      intro: "移居新地方既興奮亦可能帶來壓力。如你在英國感到精神困擾，並不孤單，而且有支援可用。",
+      s1: {
+        title: "先由家庭醫生（GP）開始",
+        li1: "向 GP 表達你的感受與情況。",
+        li2: "GP 可提供建議，必要時處方藥物。",
+        li3: "GP 可轉介你到輔導、治療或專科服務。",
+      },
+      s2: {
+        title: "NHS 談話治療（焦慮、壓力、抑鬱）",
+        p: "英格蘭的免費服務；很多時可自行網上轉介。",
+        li2: "指導式自助",
+        li3: "小組治療及輔導",
+      },
+      s3: {
+        title: "專科精神健康服務",
+        li1: "社區精神健康隊（CMHTs）提供持續支援。",
+        li2: "專科團隊：飲食失調、成癮、圍產期精神健康等。",
+        li3: "通常需要由 GP 轉介。",
+      },
+      s4: {
+        title: "緊急與危機支援",
+        li1: "致電 NHS 111（選擇 2）與專業人員對話。",
+        li2: "到所屬 NHS 醫院網站查找危機小組資料。",
+        li3: "如有即時危險，請打 999 或前往 A&E。",
+      },
+      s5: {
+        title: "其他支援來源",
+        cards: {
+          helplines: { title: "熱線與慈善機構", desc: "Samaritans、Mind、Rethink — 免費、保密的支援。" },
+          hk: { title: "香港社群", desc: "提供廣東話支援的小組與服務。" },
+          eap: { title: "僱員支援計劃（EAP）", desc: "查詢雇主是否提供免費輔導。" },
+          private: { title: "私人治療", desc: "輪候較短，但需自費。" },
+        },
+      },
+      s6: { title: "為香港人士而設的機構" },
+      summary: {
+        title: "重點摘要",
+        items: [
+          "先與 GP 談",
+          "輕至中度可自我轉介至 NHS 談話治療",
+          "複雜需要由 GP 轉介至專科",
+          "危機：111（選 2）／999／A&E",
+          "額外支援：慈善、熱線、私人選項",
+        ],
+      },
+    },
+    children: {
+      title: "在英國尋求支援（兒童及青少年）",
+      intro: "如情緒困擾影響日常生活，兒童與青少年可獲得支援。",
+      s1: { title: "與可信賴的大人傾談", p: "可先與父母、監護人、老師或學校輔導員談談。" },
+      s2: { title: "看家庭醫生（GP）", p: "GP 可傾聽、提供建議並轉介到 CAMHS。未滿 16 歲通常需由家長陪同。" },
+      s3: {
+        title: "NHS 服務（CAMHS）",
+        li1: "為 18 歲以下提供支援，例如焦慮、情緒低落、飲食問題。",
+        li2: "可由 GP、學校或社工轉介。",
+        li3: "支援包括治療、評估與持續跟進。",
+      },
+      s4: { title: "學校或學院支援", p: "學校設有關顧團隊及輔導；大學亦設學生輔導服務。" },
+      s5: { title: "熱線與網上支援",
+        cards: [
+          { name: "Childline 兒童求助熱線", desc: "免費、保密的聊天與電話（19 歲以下）。", cta: "0800 1111 / childline.org.uk" },
+          { name: "YoungMinds 短訊支援", desc: "為年青人提供危機短訊支援。", cta: "發送 YM 至 85258" },
+          { name: "Kooth", desc: "免費的網上精神健康支援。", cta: "kooth.com" },
+          { name: "The Mix", desc: "25 歲以下的資訊與社群。", cta: "themix.org.uk" },
+        ] },
+      s6: {
+        title: "短片解說（英／中）",
+        v1: { title: "如何與 GP 傾談", desc: "動畫講解：預約、如何表達、下一步。" },
+        v2: { title: "甚麼是 CAMHS？", desc: "轉介途徑及支援形式。" },
+      },
+      summary: {
+        title: "下一步",
+        items: [
+          "先與可信賴的大人傾談",
+          "預約見 GP",
+          "了解 CAMHS",
+          "使用學校或學院支援",
+          "使用熱線及網上支援",
+        ],
+      },
+    },
+  },
+};
